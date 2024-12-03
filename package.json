@@ -1,0 +1,29 @@
+{
+  "name": "ticketla-backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "console.table": "^0.10.0",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "egg-mysql": "^3.0.0",
+    "elapsed-time": "^0.0.1",
+    "excel4node": "^1.7.2",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.24.0",
+    "morgan": "~1.9.1",
+    "mysql": "^2.17.1",
+    "numeral": "^2.0.6",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-express": "^4.1.2",
+    "telbiz": "^1.0.8"
+  }
+}
