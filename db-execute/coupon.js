@@ -61,4 +61,15 @@ module.exports = {
       throw new Error("Error fetching coupon type code");
     }
   },
+  checkCouponValid: async({coupon_number})=>{
+
+    let sql = "SELECT COUNT(*) AS count FROM coupon WHERE coupon_number = ?;"
+    let result = await exec(sql, [coupon_number])
+    let count = result[0]["count"]
+    if(count == 1){
+      return true 
+    }else{
+      return false
+    }
+  }
 };

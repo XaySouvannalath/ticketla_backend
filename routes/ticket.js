@@ -1,10 +1,19 @@
-const { getCouponTypeCode, getCouponCodeByTicket } = require("../db-execute/coupon");
+const {
+  getCouponTypeCode,
+  getCouponCodeByTicket,
+  checkCouponValid,
+} = require("../db-execute/coupon");
 const {
   checkCouponUsage,
   insertCouponUsage,
   getCountCoupon,
 } = require("../db-execute/coupon_usage");
-const { insertTicket, getTicketNumber, getTicketStatus, checkTicketExist } = require("../db-execute/ticket");
+const {
+  insertTicket,
+  getTicketNumber,
+  getTicketStatus,
+  checkTicketExist,
+} = require("../db-execute/ticket");
 const { sendShirtMessage } = require("./telbiz");
 const { generateTicketNumber } = require("./utilities");
 
@@ -19,12 +28,24 @@ module.exports = {
       // If the coupon has already been used, send a response with a message
       return res.status(400).json({
         status: "error",
-        message: "This phone number has already claim a coupon.",
+        message: "ເບີໂທນີ້ແລກຮັບຄູປອງແລ້ວ.",
+      });
+    }
+    //! check is this coupon is valid
+
+    const isCouponValid = await checkCouponValid({
+      coupon_number: couponNumber,
+    });
+    if (!isCouponValid) {
+      return res.status(400).json({
+        status: "error",
+        message: "ຄູປອງນີ້ບໍ່ຖືກຕ້ອງ.",
       });
     }
 
     try {
       // Insert coupon usage data if not already used
+
       const success = await insertCouponUsage({ phoneNumber, couponNumber });
 
       if (success) {
@@ -51,18 +72,18 @@ module.exports = {
           console.log("VIP ticket");
           if (ticketCount <= 200) {
             console.log("win VIP shirt");
-             await sendShirtMessage({ phoneNumber, couponTypeCode });
+            await sendShirtMessage({ phoneNumber, couponTypeCode });
             return res.status(200).json({
               status: "success",
               success: true,
-              message: "Coupon successfully claimed.",
+              message: "ແລກຮັບຄູປອງສໍາເລັດ.",
             });
           } else {
             console.log("no win VIP shirt");
             return res.status(200).json({
               status: "success",
               success: true,
-              message: "Coupon successfully claimed.",
+              message: "ແລກຮັບຄູປອງສໍາເລັດ.",
             });
           }
         } else if (couponTypeCode == "NORMAL") {
@@ -70,18 +91,18 @@ module.exports = {
           if (ticketCount <= 100) {
             console.log("Win Normal Shirt");
             console.log("Win Normal Shirt");
-             await sendShirtMessage({ phoneNumber, couponTypeCode });
+            await sendShirtMessage({ phoneNumber, couponTypeCode });
             return res.status(200).json({
               status: "success",
               success: true,
-              message: "Coupon successfully claimed.",
+              message: "ແລກຮັບຄູປອງສໍາເລັດ.",
             });
           } else {
             console.log("no Win Normal Shirt");
             return res.status(200).json({
               status: "success",
               success: true,
-              message: "Coupon successfully claimed.",
+              message: "ແລກຮັບຄູປອງສໍາເລັດ.",
             });
           }
         }
@@ -91,52 +112,54 @@ module.exports = {
         // If insertion failed, send an error response
         return res.status(500).json({
           status: "error",
-          message: "Failed to claim the coupon. Please try again later.",
+          message: "ແລກຮັບຄູປອງບໍ່ສໍາເລັດ, ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.",
         });
       }
     } catch (error) {
       console.error("Error in claimTicket API:", error);
       return res.status(500).json({
         status: "error",
-        message: "An error occurred while processing your request.",
+        message: "ແລກຮັບຄູປອງບໍ່ສໍາເລັດ, ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.",
       });
     }
   },
-  viewTicket: async(req,res)=>{
-    let {phoneNumber} = req.body 
+  viewTicket: async (req, res) => {
+    let { phoneNumber } = req.body;
 
     //check if this phone number has ticket
-    let totalTicket = await checkTicketExist({phoneNumber})
-    if(totalTicket > 0){
-        let activity = {
-            name: "Coke Studio (PONCHET, M.VIIZ)",
-            phoneNumber: phoneNumber,
-            ticketNumber:await getTicketNumber({phoneNumber}),
-            ticketType: "",
-            price: 0,
-            status: "",
-            location: "ຫໍວັດທະນະທໍາ",
-            day: "ສຸກ",
-            date: "20 ທັນວາ 2024",
-            time: "13:00-22:00"
-        }
-    
-        let couponCode = await getCouponCodeByTicket({ticketCode: activity.ticketNumber})
-        activity.phoneNumber = phoneNumber
-        activity.ticketType = await getCouponTypeCode({couponCode})
-        activity.status = await getTicketStatus({ticketNumber: activity.ticketNumber})
-    
-        res.json({
-            success: true,
-            ticket: activity
-        })
-    }else{
-        res.json({
-            success:false,
-            ticket: null
-        })
+    let totalTicket = await checkTicketExist({ phoneNumber });
+    if (totalTicket > 0) {
+      let activity = {
+        name: "Coke Studio (PONCHET, M.VIIZ)",
+        phoneNumber: phoneNumber,
+        ticketNumber: await getTicketNumber({ phoneNumber }),
+        ticketType: "",
+        price: 0,
+        status: "",
+        location: "ຫໍວັດທະນະທໍາ",
+        day: "ສຸກ",
+        date: "20 ທັນວາ 2024",
+        time: "13:00-22:00",
+      };
+
+      let couponCode = await getCouponCodeByTicket({
+        ticketCode: activity.ticketNumber,
+      });
+      activity.phoneNumber = phoneNumber;
+      activity.ticketType = await getCouponTypeCode({ couponCode });
+      activity.status = await getTicketStatus({
+        ticketNumber: activity.ticketNumber,
+      });
+
+      res.json({
+        success: true,
+        ticket: activity,
+      });
+    } else {
+      res.json({
+        success: false,
+        ticket: null,
+      });
     }
-
-
-  }
+  },
 };
