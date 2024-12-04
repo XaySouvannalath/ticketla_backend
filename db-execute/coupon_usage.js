@@ -42,6 +42,30 @@ module.exports = {
       return false;
     }
   },
+  checkCouponUsageByCouponNumber: async({couponNumber}) =>{
+    const checkQuery = `
+    SELECT COUNT(*) AS usage_count
+    FROM coupon_usage
+    WHERE coupon_number = ?  AND record_status = 'O';
+`;
+
+    try {
+      // Execute the query and get the result
+      const result = await exec(checkQuery, [couponNumber]);
+
+      // If usage count is greater than 0, return true (coupon used)
+      if (result[0].usage_count > 0) {
+        return true;
+      }
+
+      // Otherwise, return false (coupon not used)
+      return false;
+    } catch (error) {
+      console.error("Error checking coupon usage:", error);
+      return false;
+    }
+  },
+
   getCountCoupon: async ({ couponTypeCode }) => {
     let sql = `SELECT IFNULL(COUNT(a.coupon_number), 0) AS total
                 FROM coupon_usage a

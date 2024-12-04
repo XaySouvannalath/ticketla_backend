@@ -7,6 +7,7 @@ const {
   checkCouponUsage,
   insertCouponUsage,
   getCountCoupon,
+  checkCouponUsageByCouponNumber,
 } = require("../db-execute/coupon_usage");
 const {
   insertTicket,
@@ -23,14 +24,26 @@ module.exports = {
 
     // Check if coupon has already been used by this phone number
     const hasUsedCoupon = await checkCouponUsage({ phoneNumber });
+    const checkCouponUsageByCoupon = await checkCouponUsageByCouponNumber({
+      couponNumber,
+    });
 
     if (hasUsedCoupon) {
-      // If the coupon has already been used, send a response with a message
+      // If the coupon has already been used by this phone number, send a response with a message
       return res.status(400).json({
         status: "error",
         message: "ເບີໂທນີ້ແລກຮັບຄູປອງແລ້ວ.",
       });
     }
+
+    if (checkCouponUsageByCoupon) {
+      // If the coupon has already been used, send a response with a message
+      return res.status(400).json({
+        status: "error",
+        message: "ຄູປອງນີ້ຖືກນໍາໃຊ້ແລ້ວ.",
+      });
+    }
+
     //! check is this coupon is valid
 
     const isCouponValid = await checkCouponValid({
