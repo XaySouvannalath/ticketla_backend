@@ -2,18 +2,19 @@
 const { checkCouponValid } = require("./db-execute/coupon");
 const { generateOtp, generateTicketNumber } = require("./routes/utilities");
 
+const jwt = require("jsonwebtoken")
 
-
+const JWT_SECRET_KEY = "b1zg1tal";
 
 async function validateCoupon() {
-    try {
-        const couponNumber = '29882318';
-        const result = await checkCouponValid({ coupon_number: couponNumber });
+    const token = jwt.sign(
+        { phone_number: "2079991199" }, // Payload (user's phone number)
+        JWT_SECRET_KEY, // Secret key for signing
+        {  } // Token expiration time
+      );
 
-        console.log("Coupon Validation Result:", result);
-    } catch (error) {
-        console.error("Error validating coupon:", error);
-    }
+      console.log(token)
+
 }
 
 // Call the function
