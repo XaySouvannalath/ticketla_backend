@@ -17,21 +17,21 @@ module.exports = {
       // Validate phone number
       // Validation checks
       if (!phoneNumber.startsWith("20")) {
-        return res.status(400).json({
+        return res.json({
           success: false,
           message: "ເບີໂທຕ້ອງເລີ່ມດ້ວຍ 20.",
         });
       }
 
       if (!/[25789]/.test(phoneNumber[2])) {
-        return res.status(400).json({
+        return res.json({
           success: false,
           message: "ເບີໂທຕ້ອງແມ່ນເລກ 2, 7, 5, 8 ຫຼື 9.",
         });
       }
 
       if (phoneNumber.length !== 10) {
-        return res.status(400).json({
+        return res.json({
           success: false,
           message: "ເບີໂທຕ້ອງມີຈຳນວນ 10 ຕົວເລກ.",
         });
