@@ -32,6 +32,42 @@ module.exports = {
       });
     }
   },
+  getClaimedUser: async(req,res)=>{
+
+  },
+  getClaimationByUser: async(req,res)=>{
+    try {
+      const query = `
+     select 'claimed' as users,count(phone_number) as total from users where phone_number    in (select phone_number from coupon_usage where record_status = 'O')
+and record_status  = 'O' and is_verified  = 1
+union
+  select 'unclaim' as users, count(phone_number) as total from users where phone_number  not  in (select phone_number from coupon_usage where record_status = 'O')
+and record_status  = 'O' and is_verified  = 1;
+      `;
+      
+      const result = await exec(query);
+
+      if (result && result.length > 0) {
+        res.status(200).json({
+          success: true,
+          data: result
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "no data"
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching user growth data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred while fetching user growth data.",
+        error: error.message
+      });
+    }
+
+  },
   getUserGrowth: async (req, res) => {
     try {
       const query = `

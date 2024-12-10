@@ -7,7 +7,7 @@ const { sendOTP, sendShirtMessage } = require("../routes/telbiz");
 const { claimTicket, viewTicket } = require("../routes/ticket");
 const { checkCouponUsage } = require("../routes/coupon_usage");
 const { authMiddleware } = require("../middleware/jsonwebtoken");
-const { getTotalActiveUsers, getUserGrowth, getCouponTypeCount, getClaimedCouponCount, getUnclaimedCouponCount } = require("../routes/dashboard");
+const { getTotalActiveUsers, getUserGrowth, getCouponTypeCount, getClaimedCouponCount, getUnclaimedCouponCount, getClaimationByUser } = require("../routes/dashboard");
 
 
 
@@ -30,6 +30,7 @@ router.get("/dashboard/userGrowth",  getUserGrowth);
 router.get("/dashboard/couponTypeCount",  getCouponTypeCount);
 router.get("/dashboard/claimedCouponCount",  getClaimedCouponCount);
 router.get("/dashboard/unclaimedCouponCount",  getUnclaimedCouponCount);
+router.get("/dashboard/getClaimationByUser",  getClaimationByUser);
 // router.get("/dashboard/totalActiveUsers", authMiddleware, getTotalActiveUsers);
 // router.get("/dashboard/userGrowth", authMiddleware, getUserGrowth);
 // router.get("/dashboard/couponTypeCount", authMiddleware, getCouponTypeCount);
