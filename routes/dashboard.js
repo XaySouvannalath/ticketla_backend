@@ -15,7 +15,7 @@ module.exports = {
         const totalUsers = result[0].total_users;
         res.status(200).json({
           success: true,
-          total_active_users: totalUsers
+          data: totalUsers
         });
       } else {
         res.status(404).json({
@@ -47,9 +47,9 @@ module.exports = {
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          user_growth: result.map(row => ({
+          data: result.map(row => ({
             date: row.date,
-            new_users: row.new_users
+            count: row.new_users
           }))
         });
       } else {
@@ -77,6 +77,7 @@ module.exports = {
         INNER JOIN coupon_type ct ON c.coupon_type_code = ct.type_code
         WHERE c.record_status = 'O' AND ct.record_status = 'O'
         GROUP BY ct.type_code
+        order by ct.type_code desc
       `;
       
       const result = await exec(query);
@@ -84,7 +85,7 @@ module.exports = {
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          coupon_type_counts: result.map(row => ({
+          data: result.map(row => ({
             type_code: row.type_code,
             coupon_count: row.coupon_count
           }))
@@ -122,8 +123,8 @@ module.exports = {
           AND ct.record_status = 'O'
         GROUP BY 
           ct.type_code
-        ORDER BY 
-          claimed_coupons_count DESC
+         order by ct.type_code desc
+
       `;
       
       const result = await exec(query);
@@ -131,9 +132,9 @@ module.exports = {
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          claimed_coupon_counts: result.map(row => ({
+          data: result.map(row => ({
             coupon_type_code: row.coupon_type_code,
-            claimed_coupons_count: row.claimed_coupons_count
+            coupon_count: row.claimed_coupons_count
           }))
         });
       } else {
@@ -169,8 +170,7 @@ module.exports = {
           AND cu.id IS NULL
         GROUP BY
           ct.type_code
-        ORDER BY
-          unclaimed_coupons_count DESC
+        order by ct.type_code desc
       `;
       
       const result = await exec(query);
@@ -178,9 +178,9 @@ module.exports = {
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          unclaimed_coupon_counts: result.map(row => ({
+          data: result.map(row => ({
             coupon_type_code: row.coupon_type_code,
-            unclaimed_coupons_count: row.unclaimed_coupons_count
+            coupon_count: row.unclaimed_coupons_count
           }))
         });
       } else {

@@ -25,11 +25,16 @@ router.post("/checkCouponUsage", authMiddleware, checkCouponUsage);
 router.post("/sendShirtMessage", authMiddleware, sendShirtMessage);
 
 // Dashboard routes
-router.get("/dashboard/totalActiveUsers", authMiddleware, getTotalActiveUsers);
-router.get("/dashboard/userGrowth", authMiddleware, getUserGrowth);
-router.get("/dashboard/couponTypeCount", authMiddleware, getCouponTypeCount);
-router.get("/dashboard/claimedCouponCount", authMiddleware, getClaimedCouponCount);
-router.get("/dashboard/unclaimedCouponCount", authMiddleware, getUnclaimedCouponCount);
+router.get("/dashboard/totalActiveUsers",  getTotalActiveUsers);
+router.get("/dashboard/userGrowth",  getUserGrowth);
+router.get("/dashboard/couponTypeCount",  getCouponTypeCount);
+router.get("/dashboard/claimedCouponCount",  getClaimedCouponCount);
+router.get("/dashboard/unclaimedCouponCount",  getUnclaimedCouponCount);
+// router.get("/dashboard/totalActiveUsers", authMiddleware, getTotalActiveUsers);
+// router.get("/dashboard/userGrowth", authMiddleware, getUserGrowth);
+// router.get("/dashboard/couponTypeCount", authMiddleware, getCouponTypeCount);
+// router.get("/dashboard/claimedCouponCount", authMiddleware, getClaimedCouponCount);
+// router.get("/dashboard/unclaimedCouponCount", authMiddleware, getUnclaimedCouponCount);
 
 
 // support api:

@@ -19,14 +19,14 @@ module.exports = {
       if (!phoneNumber.startsWith("20")) {
         return res.json({
           success: false,
-          message: "ເບີໂທຕ້ອງເລີ່ມດ້ວຍ 20.",
+          message: "ເບີໂທຕ້ອງມີ 20 ຂຶ້ນໜ້າ.",
         });
       }
 
       if (!/[25789]/.test(phoneNumber[2])) {
         return res.json({
           success: false,
-          message: "ເບີໂທຕ້ອງແມ່ນເລກ 2, 7, 5, 8 ຫຼື 9.",
+          message: "ເບີໂທຕ້ອງຂຶ້ນຕົ້ນດ້ວຍ 2, 7, 5, 8 ຫຼື 9 ຕາມເຄືອຂ່າຍເບີມືຖື.",
         });
       }
 
