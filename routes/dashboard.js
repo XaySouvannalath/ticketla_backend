@@ -155,22 +155,12 @@ module.exports = {
   getUnclaimedCouponCount: async (req, res) => {
     try {
       const query = `
-        SELECT
-          ct.type_code AS coupon_type_code,
-          COUNT(c.coupon_number) AS unclaimed_coupons_count
-        FROM
-          coupon c
-        INNER JOIN
-          coupon_type ct ON c.coupon_type_code = ct.type_code
-        LEFT JOIN
-          coupon_usage cu ON c.coupon_number = cu.coupon_number
-        WHERE
-          c.record_status = 'O'
-          AND ct.record_status = 'O'
-          AND cu.id IS NULL
-        GROUP BY
-          ct.type_code
-        order by ct.type_code desc
+    select ct.type_code as coupon_type_code , COUNT(c.coupon_number) as unclaimed_coupons_count from coupon c 
+ inner join coupon_type ct on ct.type_code = c.coupon_type_code 
+ where c.coupon_number not in (select coupon_number from coupon_usage  where record_status = 'O') 
+ and c.record_status  = 'O'
+ group by ct.type_code
+ order by ct.type_code desc
       `;
       
       const result = await exec(query);
