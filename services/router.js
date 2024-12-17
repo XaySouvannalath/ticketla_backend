@@ -4,10 +4,12 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 const {getUser, verifyOtp } = require('../routes/users');
 const { sendOTP, sendShirtMessage } = require("../routes/telbiz");
-const { claimTicket, viewTicket } = require("../routes/ticket");
+const { claimTicket, viewTicket, validateTicket, viewTicketByStaff } = require("../routes/ticket");
 const { checkCouponUsage } = require("../routes/coupon_usage");
 const { authMiddleware } = require("../middleware/jsonwebtoken");
 const { getTotalActiveUsers, getUserGrowth, getCouponTypeCount, getClaimedCouponCount, getUnclaimedCouponCount, getClaimationByUser } = require("../routes/dashboard");
+const { staffLogin } = require("../routes/staff");
+const { getTicketUsageByStaff } = require("../routes/ticket_usage");
 
 
 
@@ -36,6 +38,14 @@ router.get("/dashboard/getClaimationByUser",  getClaimationByUser);
 // router.get("/dashboard/couponTypeCount", authMiddleware, getCouponTypeCount);
 // router.get("/dashboard/claimedCouponCount", authMiddleware, getClaimedCouponCount);
 // router.get("/dashboard/unclaimedCouponCount", authMiddleware, getUnclaimedCouponCount);
+
+
+
+// staff section
+router.post("/staff/login", staffLogin)
+router.post("/staff/viewTicketByStaff", viewTicketByStaff)
+router.post("/staff/validateTicket", validateTicket)
+router.post("/staff/getTicketUsageByStaff", getTicketUsageByStaff)
 
 
 // support api:

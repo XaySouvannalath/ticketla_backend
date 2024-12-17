@@ -14,7 +14,10 @@ const {
   getTicketNumber,
   getTicketStatus,
   checkTicketExist,
+  getTicketDetailsByTicketNumber,
+  markTicketAsUsed,
 } = require("../db-execute/ticket");
+const { insertTicketUsage } = require("../db-execute/ticket_usage");
 const { sendShirtMessage } = require("./telbiz");
 const { generateTicketNumber } = require("./utilities");
 
@@ -172,6 +175,110 @@ module.exports = {
       res.json({
         success: false,
         ticket: null,
+      });
+    }
+  },
+
+  viewTicketByStaff: async (req, res) => {
+    const { ticketNumber } = req.body;
+
+    // Check if ticket number is provided
+    if (!ticketNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "ກະລຸນາປ້ອນຂໍ້ມູນ.",
+      });
+    }
+
+    try {
+      // Fetch ticket details by ticket number
+      const ticketDetails = await getTicketDetailsByTicketNumber({
+        ticketNumber,
+      });
+
+      // Check if ticket exists
+      if (!ticketDetails) {
+        return res.status(404).json({
+          success: false,
+          message: "ບັດນີ້ບໍ່ມີຢູ່.",
+        });
+      }
+
+      // Check if ticket is valid
+      if (ticketDetails.status !== "valid") {
+        return res.status(200).json({
+          success: true,
+          message: "ບັດນີ້ບໍ່ຖືກຕ້ອງຫຼືຖືກນໍາໃຊ້ແລ້ວ.",
+          ticket: ticketDetails,
+        });
+      }
+
+      // Get coupon type
+      const couponType = await getCouponTypeCode({
+        couponCode: ticketDetails.coupon_number,
+      });
+
+      // Prepare ticket response data
+      const ticketInfo = {
+        ticketCode: ticketDetails.ticket_code,
+        couponType: couponType,
+        status: ticketDetails.status,
+        createdDate: ticketDetails.created_date,
+        lastModifiedDate: ticketDetails.last_modified_date,
+      };
+
+      return res.status(200).json({
+        success: true,
+        ticket: ticketDetails,
+      });
+    } catch (error) {
+      console.error("Error in validateTicket API:", error);
+      return res.status(500).json({
+        success: false,
+        message: "ກຳລັງມີບັນຫາ, ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.",
+      });
+    }
+  },
+  validateTicket: async (req, res) => {
+    const { ticketNumber, verifiedBy } = req.body; // Extract data from the request body
+
+    if (!ticketNumber || !verifiedBy) {
+      return res.status(400).json({
+        success: false,
+
+        message: "ກະລຸນາປ້ອນຂໍ້ມູນ ແລະ ຊື່ຜູ້ກວດສອບ.",
+      });
+    }
+
+    try {
+      // Mark the ticket as used
+      const result = await markTicketAsUsed({ ticketNumber });
+
+      if (result.success === true) {
+        // If the ticket was successfully marked as used, insert into ticket_usage
+        await insertTicketUsage({
+          ticket_number: ticketNumber,
+          verified_by: verifiedBy,
+        });
+
+        // Respond with success message
+        return res.status(200).json({
+          success: true,
+          message: "ແລກບັດສໍາເລັດ.",
+        });
+      } else {
+        // If ticket marking fails, return failure response
+        return res.status(400).json({
+        success: false,
+          message: "ບັດນີ້ບໍ່ສາມາດນໍາໃຊ້ໄດ້.",
+        });
+      }
+    } catch (error) {
+      // Catch any unexpected errors
+      console.error("ຄວາມຜິດພາດ:", error);
+      return res.status(500).json({
+        success: false,
+        message: "ມີຄວາມຜິດພາດ, ກະລຸນາລອງໃໝ່.",
       });
     }
   },
