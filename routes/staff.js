@@ -1,8 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken"); // For generating JWT
 const { exec } = require("../services/database");
+const { decryptText } = require("../utilities/cryptojs");
 
-const JWT_SECRET = "your-secret-key"; // Replace with a strong secret key
+const JWT_SECRET = "b1zg1tal"; // Replace with a strong secret key
 const JWT_EXPIRATION = "1h"; // Token expiration time (adjust as needed)
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
     const password = req.body.password;
 
     if (!username || !password) {
-      return res.status(400).json({ message: "ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້ ແລະ ລະຫັດຜ່ານ." });
+      return res.status(400).json({ success: false,message: "ກະລຸນາປ້ອນຊື່ຜູ້ໃຊ້ ແລະ ລະຫັດຜ່ານ." });
     }
 
     try {
@@ -21,7 +22,7 @@ module.exports = {
       console.log(results)
 
       if (results.length === 0) {
-        return res.status(401).json({ message: "ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ." });
+        return res.status(401).json({success: false, message: "ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ." });
       }
 
       const user = results[0]; // Assuming the query returns an array of users
@@ -29,14 +30,17 @@ module.exports = {
       // Compare the provided password with the hashed password in the database
       console.log(password)
       console.log(user.password)
-      const isPasswordValid = await bcrypt.compare(password, user.password);
 
-      let validd = password == user.password
+      let dpassword = await decryptText(password)
+      let ddbpassword = await decryptText(user.password)
+
+      console.log(dpassword)
+      console.log(ddbpassword)
+
+      let _valid = dpassword == ddbpassword
       
-      console.log("compare result", isPasswordValid)
-      console.log("compare result 2", validd)
-      if (!isPasswordValid) {
-        return res.status(401).json({ message: "ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ." });
+      if (!_valid) {
+        return res.status(401).json({ success: false,message: "ຊື່ຜູ້ໃຊ້ ຫຼື ລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ." });
       }
 
       // Generate a JWT token
@@ -47,11 +51,15 @@ module.exports = {
           record_status: user.record_status, // Include any other necessary user info
         },
         JWT_SECRET,
-        { expiresIn: JWT_EXPIRATION }
+        { 
+            // expiresIn: JWT_EXPIRATION 
+        
+        }
       );
 
       // Return success response with token
       return res.status(200).json({
+        success: true,
         message: "ເຂົ້າສູລະບົບສໍາເລັດ!",
         token: token,
         user: {
@@ -64,7 +72,7 @@ module.exports = {
       });
     } catch (error) {
       console.error("Error during login:", error);
-      return res.status(500).json({ message: "ມີຂໍ້ຜິດພາດໃນຂະນະທີ່ດໍາເນີນການຂໍ້ມູນ." });
+      return res.status(500).json({success: false, message: "ມີຂໍ້ຜິດພາດໃນຂະນະທີ່ດໍາເນີນການຂໍ້ມູນ." });
     }
   },
 };

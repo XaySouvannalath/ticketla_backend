@@ -43,9 +43,9 @@ router.get("/dashboard/getClaimationByUser",  getClaimationByUser);
 
 // staff section
 router.post("/staff/login", staffLogin)
-router.post("/staff/viewTicketByStaff", viewTicketByStaff)
-router.post("/staff/validateTicket", validateTicket)
-router.post("/staff/getTicketUsageByStaff", getTicketUsageByStaff)
+router.post("/staff/viewTicketByStaff",authMiddleware, viewTicketByStaff)
+router.post("/staff/validateTicket",authMiddleware, validateTicket)
+router.post("/staff/getTicketUsageByStaff", authMiddleware,getTicketUsageByStaff)
 
 
 // support api:

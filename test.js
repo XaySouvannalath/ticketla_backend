@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken")
 const JWT_SECRET_KEY = "b1zg1tal";
 
 const bcrypt = require("bcrypt");
+const { encryptText, decryptText } = require("./utilities/cryptojs");
 
 const saltRounds = 10; // Number of salt rounds for bcrypt
 const passwords = [];
@@ -15,26 +16,25 @@ for (let i = 1; i <= 10; i++) {
 }
 
 (async () => {
-  // const hashedPasswords = [];
-
-  // for (const password of passwords) {
-  //   const hashedPassword = await bcrypt.hash(password, saltRounds);
-  //   hashedPasswords.push({ username: password, password: hashedPassword });
-  // }
-
-  // console.log(JSON.stringify(hashedPasswords, null, 2));
+  let pw = "staff01@c0kE"
 
 
-  const saltRounds = 10;
-  let result  = await bcrypt.hash("123", saltRounds)
+  let  epw = await encryptText(pw)
+
+  let dpw =await  decryptText(epw)
 
 
-  let pw = '$2b$10$3OvyMqiHioaD8vcqEPY3qeSAicXYIVD6Qhdxrz2iu5UKlR5YjfruC'
-  let dbpw = '$2b$10$3OvyMqiHioaD8vcqEPY3qeSAicXYIVD6Qhdxrz2iu5UKlR5YjfruC'
+let d1 = 'U2FsdGVkX19cE+EiBfM+gpihxL5U4Mqcmzk3/IfMG/E='
 
 
-  let rs = bcrypt.compare(pw)
-  console.log(result)
+let d2 = 'U2FsdGVkX19cE+EiBfM+gpihxL5U4Mqcmzk3/IfMG/E='
+
+let dpw1 =await  decryptText(d1)
+
+
+console.log(dpw1)
+console.log(await decryptText(d2))
+
 })();
 // Call the function
 // validateCoupon();
