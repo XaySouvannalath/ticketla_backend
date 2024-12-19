@@ -6,10 +6,11 @@ const {getUser, verifyOtp } = require('../routes/users');
 const { sendOTP, sendShirtMessage } = require("../routes/telbiz");
 const { claimTicket, viewTicket, validateTicket, viewTicketByStaff } = require("../routes/ticket");
 const { checkCouponUsage } = require("../routes/coupon_usage");
-const { authMiddleware } = require("../middleware/jsonwebtoken");
+const { authMiddleware, staffMiddleWare } = require("../middleware/jsonwebtoken");
 const { getTotalActiveUsers, getUserGrowth, getCouponTypeCount, getClaimedCouponCount, getUnclaimedCouponCount, getClaimationByUser } = require("../routes/dashboard");
 const { staffLogin } = require("../routes/staff");
 const { getTicketUsageByStaff } = require("../routes/ticket_usage");
+const { claimShirt } = require("../routes/shirt-winner");
 
 
 
@@ -43,9 +44,10 @@ router.get("/dashboard/getClaimationByUser",  getClaimationByUser);
 
 // staff section
 router.post("/staff/login", staffLogin)
-router.post("/staff/viewTicketByStaff",authMiddleware, viewTicketByStaff)
-router.post("/staff/validateTicket",authMiddleware, validateTicket)
-router.post("/staff/getTicketUsageByStaff", authMiddleware,getTicketUsageByStaff)
+router.post("/staff/viewTicketByStaff",staffMiddleWare, viewTicketByStaff)
+router.post("/staff/validateTicket",staffMiddleWare, validateTicket)
+router.post("/staff/getTicketUsageByStaff", staffMiddleWare,getTicketUsageByStaff)
+router.post("/staff/claimShirt", staffMiddleWare,claimShirt)
 
 
 // support api:

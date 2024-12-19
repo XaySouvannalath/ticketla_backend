@@ -2,6 +2,7 @@ let Telbiz = require("telbiz");
 const { generateOtp } = require("./utilities");
 const { insertOtpVerification } = require("../db-execute/otp_verification");
 const { insertOtpLog } = require("../db-execute/otp_logs");
+const { insertShirtWinner } = require("../db-execute/shirt-winner");
 
 const tb = new Telbiz(
   "17138648941205541",
@@ -85,6 +86,11 @@ module.exports = {
     // ສຳລັບບັດ Normal: ຂໍສະເເດງຄວາມຍິນດີ ທ່ານໄດ້ຮັບເສື້ອຢືດ "ໂຄ້ກ" 1 ຜືນ ເອົາຂໍ້ຄວາມນີ້ໄປແລກຮັບເສື້ອໄດ້ທີ່ໜ້າງານ
     let message = "";
     if (couponTypeCode == "VIP") {
+
+      await insertShirtWinner({
+        phone_number: phoneNumber,
+        num_of_shirt: 2
+      })
       message =
         "ຂໍສະເເດງຄວາມຍິນດີ ທ່ານໄດ້ຮັບເສື້ອຢືດ ໂຄ້ກ 2 ຜືນ ເອົາຂໍ້ຄວາມນີ້ໄປແລກຮັບເສື້ອໄດ້ທີ່ໜ້າງານ";
       await tb
@@ -98,6 +104,11 @@ module.exports = {
           console.log(err);
         });
     } else if (couponTypeCode == "NORMAL") {
+
+      await insertShirtWinner({
+        phone_number: phoneNumber,
+        num_of_shirt: 1
+      })
       message =
         "ຂໍສະເເດງຄວາມຍິນດີ ທ່ານໄດ້ຮັບເສື້ອຢືດ ໂຄ້ກ 1 ຜືນ ເອົາຂໍ້ຄວາມນີ້ໄປແລກຮັບເສື້ອໄດ້ທີ່ໜ້າງານ";
       await tb

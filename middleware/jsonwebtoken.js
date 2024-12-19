@@ -17,6 +17,8 @@ module.exports = {
     try {
       // Verify the token
       const decoded = jwt.verify(token, JWT_SECRET_KEY);
+      console.log(decoded)
+      console.log(req.user)
       req.user = decoded;
       next();
     } catch (error) {
@@ -39,8 +41,14 @@ module.exports = {
     try {
       // Verify the token
       const decoded = jwt.verify(token, JWT_SECRET_KEY);
-      req.user = decoded;
-      next();
+      if(decoded.username){
+
+        req.user = decoded;
+        next();
+      }else{
+      return res.status(403).json({ message: "Invalid token" });
+
+      }
     } catch (error) {
       console.log(error);
       return res.status(403).json({ message: "Invalid token" });

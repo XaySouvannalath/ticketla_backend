@@ -66,21 +66,28 @@ module.exports = {
       const result = await exec(
         `
         
-           select 
+    select 
    
    t.id,
    t.ticket_code,
    t.status,
    cu.phone_number,
    ct.type,
-   t.record_status
-   #,cu.record_status as cu_rst
+   t.record_status, 
+   sw.status as win_shirt_status,
+   sw.num_of_shirt as num_of_shirt,
+      CASE 
+       WHEN sw.status = 'claimed' AND sw.num_of_shirt > 0 THEN 'YES'
+       WHEN sw.status = 'valid' AND sw.num_of_shirt > 0 THEN 'YES'
+       ELSE 'NO'
+   END AS has_shirt
    
    
    from ticket t
    inner join coupon_usage cu  on cu.coupon_number  = t.coupon_code 
    inner join coupon c on c.coupon_number  = cu.coupon_number 
    inner join coupon_type ct on ct.type_code = c.coupon_type_code 
+   left join shirt_winner sw  on sw.phone_number  = cu.phone_number 
    
    where t.record_status = 'O'  
    and cu.record_status = 'O'
