@@ -47,7 +47,7 @@ module.exports = {
 
       // Send OTP via SMS
       tb.SendSMSAsync(
-        tb.SMSHeader.News,
+        tb.SMSHeader.OTP,
         phoneNumber,
         `ທ່ານໄດ້ຮັບລະຫັດ: ${otpCode} ຈາກ COKE STUDIO`
       )
@@ -112,7 +112,7 @@ module.exports = {
       message =
         "ຂໍສະເເດງຄວາມຍິນດີ ທ່ານໄດ້ຮັບເສື້ອຢືດ ໂຄ້ກ 1 ຜືນ ເອົາຂໍ້ຄວາມນີ້ໄປແລກຮັບເສື້ອໄດ້ທີ່ໜ້າງານ";
       await tb
-        .SendSMSAsync(tb.SMSHeader.News, phoneNumber, message)
+        .SendSMSAsync(tb.SMSHeader.OTP, phoneNumber, message)
         .then((rs) => {
           console.log(rs);
           //    res.json(rs);
