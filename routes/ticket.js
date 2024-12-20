@@ -98,7 +98,7 @@ module.exports = {
           console.log("VIP ticket");
           if (ticketCount <= 200) {
             console.log("win VIP shirt");
-            await sendShirtMessage({ phoneNumber, couponTypeCode });
+            // await sendShirtMessage({ phoneNumber, couponTypeCode });
             return res.status(200).json({
               status: "success",
               success: true,
@@ -117,7 +117,7 @@ module.exports = {
           if (ticketCount <= 100) {
             console.log("Win Normal Shirt");
             console.log("Win Normal Shirt");
-            await sendShirtMessage({ phoneNumber, couponTypeCode });
+            // await sendShirtMessage({ phoneNumber, couponTypeCode });
             return res.status(200).json({
               status: "success",
               success: true,
