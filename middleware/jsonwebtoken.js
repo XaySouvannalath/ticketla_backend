@@ -17,8 +17,8 @@ module.exports = {
     try {
       // Verify the token
       const decoded = jwt.verify(token, JWT_SECRET_KEY);
-      console.log(decoded)
-      console.log(req.user)
+      // console.log(decoded)
+      // console.log(req.user)
       req.user = decoded;
       next();
     } catch (error) {
