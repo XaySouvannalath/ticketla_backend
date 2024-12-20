@@ -3,7 +3,8 @@ const { exec } = require("../services/database");
 module.exports = {
   insertShirtWinner: async ({ phone_number, num_of_shirt }) => {
     let sql = `
-            INSERT INTO shirt_winner (?, ?, status)
+            INSERT INTO shirt_winner (phone_number, num_of_shirt, status)
+            values(?,? 'valid')
         `;
 
     let result = await exec(sql, [phone_number, num_of_shirt]);
