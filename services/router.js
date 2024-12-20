@@ -7,10 +7,11 @@ const { sendOTP, sendShirtMessage } = require("../routes/telbiz");
 const { claimTicket, viewTicket, validateTicket, viewTicketByStaff } = require("../routes/ticket");
 const { checkCouponUsage } = require("../routes/coupon_usage");
 const { authMiddleware, staffMiddleWare } = require("../middleware/jsonwebtoken");
-const { getTotalActiveUsers, getUserGrowth, getCouponTypeCount, getClaimedCouponCount, getUnclaimedCouponCount, getClaimationByUser } = require("../routes/dashboard");
+const { getTotalActiveUsers, getUserGrowth, getCouponTypeCount, getClaimedCouponCount, getUnclaimedCouponCount, getClaimationByUser, getStaffClaimedTicket, getShirtStatistic, getTicketStatistic } = require("../routes/dashboard");
 const { staffLogin } = require("../routes/staff");
 const { getTicketUsageByStaff } = require("../routes/ticket_usage");
 const { claimShirt } = require("../routes/shirt-winner");
+const { getEventStatus, setEventOpen, setEventClose } = require("../routes/setting");
 
 
 
@@ -34,11 +35,18 @@ router.get("/dashboard/couponTypeCount",  getCouponTypeCount);
 router.get("/dashboard/claimedCouponCount",  getClaimedCouponCount);
 router.get("/dashboard/unclaimedCouponCount",  getUnclaimedCouponCount);
 router.get("/dashboard/getClaimationByUser",  getClaimationByUser);
+router.get("/dashboard/getStaffClaimedTicket",  getStaffClaimedTicket);
+router.get("/dashboard/getShirtStatistic",  getShirtStatistic);
+router.get("/dashboard/getTicketStatistic",  getTicketStatistic);
 // router.get("/dashboard/totalActiveUsers", authMiddleware, getTotalActiveUsers);
 // router.get("/dashboard/userGrowth", authMiddleware, getUserGrowth);
 // router.get("/dashboard/couponTypeCount", authMiddleware, getCouponTypeCount);
 // router.get("/dashboard/claimedCouponCount", authMiddleware, getClaimedCouponCount);
 // router.get("/dashboard/unclaimedCouponCount", authMiddleware, getUnclaimedCouponCount);
+
+router.post("/dashboard/getEventStatus",  getEventStatus);
+router.post("/dashboard/setEventOpen",  setEventOpen);
+router.post("/dashboard/setEventClose",  setEventClose);
 
 
 

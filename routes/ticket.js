@@ -9,6 +9,7 @@ const {
   getCountCoupon,
   checkCouponUsageByCouponNumber,
 } = require("../db-execute/coupon_usage");
+const { dbIsEventOpen } = require("../db-execute/setting");
 const {
   insertTicket,
   getTicketNumber,
@@ -251,28 +252,40 @@ module.exports = {
     }
 
     try {
-      // Mark the ticket as used
-      const result = await markTicketAsUsed({ ticketNumber });
 
-      if (result.success === true) {
-        // If the ticket was successfully marked as used, insert into ticket_usage
-        await insertTicketUsage({
-          ticket_number: ticketNumber,
-          verified_by: verifiedBy,
-        });
+      let isOpen = await dbIsEventOpen()
 
-        // Respond with success message
+      if(isOpen == "Y"){
+        // Mark the ticket as used
+        const result = await markTicketAsUsed({ ticketNumber });
+  
+        if (result.success === true) {
+          // If the ticket was successfully marked as used, insert into ticket_usage
+          await insertTicketUsage({
+            ticket_number: ticketNumber,
+            verified_by: verifiedBy,
+          });
+  
+          // Respond with success message
+          return res.status(200).json({
+            success: true,
+            message: "ແລກບັດສໍາເລັດ.",
+          });
+        } else {
+          // If ticket marking fails, return failure response
+          return res.status(400).json({
+          success: false,
+            message: "ບັດນີ້ບໍ່ສາມາດນໍາໃຊ້ໄດ້.",
+          });
+        }
+      }else{
         return res.status(200).json({
           success: true,
-          message: "ແລກບັດສໍາເລັດ.",
-        });
-      } else {
-        // If ticket marking fails, return failure response
-        return res.status(400).json({
-        success: false,
-          message: "ບັດນີ້ບໍ່ສາມາດນໍາໃຊ້ໄດ້.",
+          message: "ໝົດເວລາການແລກບັດແລ້ວ.",
         });
       }
+
+
     } catch (error) {
       // Catch any unexpected errors
       console.error("ຄວາມຜິດພາດ:", error);

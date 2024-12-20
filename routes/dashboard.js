@@ -8,19 +8,19 @@ module.exports = {
         FROM users 
         WHERE record_status = 'O'
       `;
-      
+
       const result = await exec(query);
 
       if (result && result.length > 0) {
         const totalUsers = result[0].total_users;
         res.status(200).json({
           success: true,
-          data: totalUsers
+          data: totalUsers,
         });
       } else {
         res.status(404).json({
           success: false,
-          message: "No data found"
+          message: "No data found",
         });
       }
     } catch (error) {
@@ -28,14 +28,12 @@ module.exports = {
       res.status(500).json({
         success: false,
         message: "Server error occurred while fetching total active users.",
-        error: error.message
+        error: error.message,
       });
     }
   },
-  getClaimedUser: async(req,res)=>{
-
-  },
-  getClaimationByUser: async(req,res)=>{
+  getClaimedUser: async (req, res) => {},
+  getClaimationByUser: async (req, res) => {
     try {
       const query = `
      select 'claimed' as users,count(phone_number) as total from users where phone_number    in (select phone_number from coupon_usage where record_status = 'O')
@@ -44,18 +42,18 @@ union
   select 'unclaim' as users, count(phone_number) as total from users where phone_number  not  in (select phone_number from coupon_usage where record_status = 'O')
 and record_status  = 'O' and is_verified  = 1;
       `;
-      
+
       const result = await exec(query);
 
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          data: result
+          data: result,
         });
       } else {
         res.status(404).json({
           success: false,
-          message: "no data"
+          message: "no data",
         });
       }
     } catch (error) {
@@ -63,10 +61,9 @@ and record_status  = 'O' and is_verified  = 1;
       res.status(500).json({
         success: false,
         message: "Server error occurred while fetching user growth data.",
-        error: error.message
+        error: error.message,
       });
     }
-
   },
   getUserGrowth: async (req, res) => {
     try {
@@ -77,21 +74,21 @@ and record_status  = 'O' and is_verified  = 1;
         GROUP BY DATE(created_date)
         ORDER BY date
       `;
-      
+
       const result = await exec(query);
 
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          data: result.map(row => ({
+          data: result.map((row) => ({
             date: row.date,
-            count: row.new_users
-          }))
+            count: row.new_users,
+          })),
         });
       } else {
         res.status(404).json({
           success: false,
-          message: "No user growth data found"
+          message: "No user growth data found",
         });
       }
     } catch (error) {
@@ -99,7 +96,7 @@ and record_status  = 'O' and is_verified  = 1;
       res.status(500).json({
         success: false,
         message: "Server error occurred while fetching user growth data.",
-        error: error.message
+        error: error.message,
       });
     }
   },
@@ -115,21 +112,21 @@ and record_status  = 'O' and is_verified  = 1;
         GROUP BY ct.type_code
         order by ct.type_code desc
       `;
-      
+
       const result = await exec(query);
 
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          data: result.map(row => ({
+          data: result.map((row) => ({
             type_code: row.type_code,
-            coupon_count: row.coupon_count
-          }))
+            coupon_count: row.coupon_count,
+          })),
         });
       } else {
         res.status(404).json({
           success: false,
-          message: "No coupon type count data found"
+          message: "No coupon type count data found",
         });
       }
     } catch (error) {
@@ -137,7 +134,7 @@ and record_status  = 'O' and is_verified  = 1;
       res.status(500).json({
         success: false,
         message: "Server error occurred while fetching coupon type count data.",
-        error: error.message
+        error: error.message,
       });
     }
   },
@@ -162,29 +159,30 @@ and record_status  = 'O' and is_verified  = 1;
          order by ct.type_code desc
 
       `;
-      
+
       const result = await exec(query);
 
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          data: result.map(row => ({
+          data: result.map((row) => ({
             coupon_type_code: row.coupon_type_code,
-            coupon_count: row.claimed_coupons_count
-          }))
+            coupon_count: row.claimed_coupons_count,
+          })),
         });
       } else {
         res.status(404).json({
           success: false,
-          message: "No claimed coupon count data found"
+          message: "No claimed coupon count data found",
         });
       }
     } catch (error) {
       console.error("Error fetching claimed coupon count data:", error);
       res.status(500).json({
         success: false,
-        message: "Server error occurred while fetching claimed coupon count data.",
-        error: error.message
+        message:
+          "Server error occurred while fetching claimed coupon count data.",
+        error: error.message,
       });
     }
   },
@@ -198,30 +196,132 @@ and record_status  = 'O' and is_verified  = 1;
  group by ct.type_code
  order by ct.type_code desc
       `;
-      
+
       const result = await exec(query);
 
       if (result && result.length > 0) {
         res.status(200).json({
           success: true,
-          data: result.map(row => ({
+          data: result.map((row) => ({
             coupon_type_code: row.coupon_type_code,
-            coupon_count: row.unclaimed_coupons_count
-          }))
+            coupon_count: row.unclaimed_coupons_count,
+          })),
         });
       } else {
         res.status(404).json({
           success: false,
-          message: "No unclaimed coupon count data found"
+          message: "No unclaimed coupon count data found",
         });
       }
     } catch (error) {
       console.error("Error fetching unclaimed coupon count data:", error);
       res.status(500).json({
         success: false,
-        message: "Server error occurred while fetching unclaimed coupon count data.",
-        error: error.message
+        message:
+          "Server error occurred while fetching unclaimed coupon count data.",
+        error: error.message,
       });
     }
-  }
+  },
+  getStaffClaimedTicket: async (req, res) => {
+    try {
+      const query = `
+       select 
+username as label,
+(select count(1) from ticket_usage where verified_by = su.username and record_status  = 'O')  as count
+from staff_users su ;
+      `;
+
+      const result = await exec(query);
+
+      if (result && result.length > 0) {
+        res.status(200).json({
+          success: true,
+          data: result,
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "data not found",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching claiming data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred while fetching user growth data.",
+        error: error.message,
+      });
+    }
+  },
+  getTicketStatistic: async (req, res) => {
+    try {
+      const query = `
+  select 
+  status as label,
+  count(*) as count
+  from 
+  ticket 
+  where record_status = 'O'
+  group by status ;
+      `;
+
+      const result = await exec(query);
+
+      if (result && result.length > 0) {
+        res.status(200).json({
+          success: true,
+          data: result,
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "data not found",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching claiming data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred while fetching user growth data.",
+        error: error.message,
+      });
+    }
+  },
+  getShirtStatistic: async (req, res) => {
+    try {
+      const query = `
+SELECT 
+    status as label, 
+    COUNT(*) AS count
+FROM 
+    shirt_winner
+    
+   where record_status = 'O'
+GROUP BY 
+    status;
+      `;
+
+      const result = await exec(query);
+
+      if (result && result.length > 0) {
+        res.status(200).json({
+          success: true,
+          data: result,
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "data not found",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching claiming data:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error occurred while fetching user growth data.",
+        error: error.message,
+      });
+    }
+  },
 };
