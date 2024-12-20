@@ -52,7 +52,8 @@ module.exports = {
   
   where t.record_status = 'O' and tu.record_status = 'O'
   and tu.verified_by = ?
-  
+    order by tu.id desc
+
     `
 
     let result = await exec(sql, [staffId])
