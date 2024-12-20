@@ -94,7 +94,7 @@ module.exports = {
       message =
         "ຂໍສະເເດງຄວາມຍິນດີ ທ່ານໄດ້ຮັບເສື້ອຢືດ ໂຄ້ກ 2 ຜືນ ເອົາຂໍ້ຄວາມນີ້ໄປແລກຮັບເສື້ອໄດ້ທີ່ໜ້າງານ";
       await tb
-        .SendSMSAsync(tb.SMSHeader.News, phoneNumber, message)
+        .SendSMSAsync(tb.SMSHeader.OTP, phoneNumber, message)
         .then((rs) => {
           console.log(rs);
           //    res.json(rs);
